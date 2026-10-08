@@ -53,11 +53,28 @@
   <div id="locked-screen" class="hidden w-full max-w-md z-20 my-auto text-center bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-rose-100">
     <div class="text-6xl mb-4 select-none">🔒⛔</div>
     <h1 class="text-2xl font-bold text-slate-800 mb-2">Teren Prywatny!</h1>
-    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+    <p class="text-slate-600 text-sm mb-5 leading-relaxed">
       Ups! To zaproszenie jest ściśle tajne i przeznaczone wyłącznie dla <span class="font-semibold text-rose-500">jednej, wyjątkowej osoby</span>.
     </p>
-    <div class="p-4 bg-rose-50 rounded-2xl border border-rose-100 text-xs text-rose-700 leading-normal">
-      Jeśli to Ty miałaś otrzymać to zaproszenie, upewnij się, że otwierasz pełny link z tajnym kluczem dostępu 😉
+
+    <!-- Formularz wpisania hasła / klucza na żywo -->
+    <div class="space-y-3 mb-4 text-left">
+      <label for="unlock-key-input" class="block text-xs font-semibold uppercase tracking-wider text-slate-600">
+        Wpisz hasło dostępu:
+      </label>
+      <div class="flex gap-2">
+        <input type="password" id="unlock-key-input" placeholder="Wpisz tajne hasło..." class="flex-1 px-4 py-2.5 rounded-xl border border-rose-200 bg-white focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm font-medium text-slate-800">
+        <button type="button" onclick="submitUnlockKey()" class="px-5 py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold text-sm rounded-xl shadow-md transition-all active:scale-95">
+          Wejdź ✨
+        </button>
+      </div>
+      <p id="unlock-error" class="hidden text-xs text-red-500 font-semibold mt-1">
+        Niepoprawne hasło! Spróbuj ponownie 🙈
+      </p>
+    </div>
+
+    <div class="p-3 bg-rose-50 rounded-2xl border border-rose-100 text-xs text-rose-700 leading-normal">
+      Wskazówka: Domyślne hasło to <span class="font-bold underline">randka2025</span> (albo kliknij w pełny link od organizatora 😉).
     </div>
   </div>
 
@@ -74,6 +91,7 @@
         <div class="w-8 h-2 rounded-full bg-rose-200 transition-all duration-300" id="dot-2"></div>
         <div class="w-8 h-2 rounded-full bg-rose-200 transition-all duration-300" id="dot-3"></div>
         <div class="w-8 h-2 rounded-full bg-rose-200 transition-all duration-300" id="dot-4"></div>
+        <div class="w-8 h-2 rounded-full bg-rose-200 transition-all duration-300" id="dot-5"></div>
       </div>
     </div>
 
@@ -148,13 +166,104 @@
           Wróć
         </button>
         <button onclick="validateStep2()" class="w-2/3 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-lg shadow-rose-200 hover:brightness-105 active:scale-95 transition">
+          Przejdź do atrakcji 🎯
+        </button>
+      </div>
+    </div>
+
+    <!-- KROK 3: Wybór rodzaju randki / aktywności -->
+    <div id="step-3" class="step-card hidden bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-rose-100">
+      <div class="text-center mb-5">
+        <div class="text-5xl mb-2">🎯✨</div>
+        <h2 class="text-2xl font-bold text-slate-800">Co będziemy robić?</h2>
+        <p class="text-slate-500 text-xs sm:text-sm">Wybierz główny punkt programu:</p>
+      </div>
+
+      <div class="space-y-2.5 max-h-[350px] overflow-y-auto pr-1" id="activity-container">
+        <!-- Grzybobranie -->
+        <label class="activity-card flex items-center p-3 rounded-2xl border-2 border-slate-200 bg-white hover:border-rose-400 cursor-pointer transition-all">
+          <input type="radio" name="activity" value="Grzybobranie 🍄 (Spacerek po lesie)" class="hidden peer">
+          <div class="text-3xl mr-3 peer-checked:scale-110 transition-transform">🍄</div>
+          <div class="flex-1">
+            <div class="text-sm font-bold text-slate-800">Grzybobranie</div>
+            <p class="text-[11px] text-slate-500">Romantyczny spacer po lesie, świeże powietrze i szukanie prawdziwków i prawdziwek ;D</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
+        </label>
+
+        <!-- Gokarty -->
+        <label class="activity-card flex items-center p-3 rounded-2xl border-2 border-slate-200 bg-white hover:border-rose-400 cursor-pointer transition-all">
+          <input type="radio" name="activity" value="Gokarty 🏎️ (Poczujmy prędkość!)" class="hidden peer">
+          <div class="text-3xl mr-3 peer-checked:scale-110 transition-transform">🏎️</div>
+          <div class="flex-1">
+            <div class="text-sm font-bold text-slate-800">Gokarty</div>
+            <p class="text-[11px] text-slate-500">Poczujmy prędkość, adrenalinę i sprawdźmy, kto ma cięższą nogę!</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
+        </label>
+
+        <!-- Retro gry -->
+        <label class="activity-card flex items-center p-3 rounded-2xl border-2 border-slate-200 bg-white hover:border-rose-400 cursor-pointer transition-all">
+          <input type="radio" name="activity" value="Retro gry / Salon arcade 🕹️" class="hidden peer">
+          <div class="text-3xl mr-3 peer-checked:scale-110 transition-transform">🕹️</div>
+          <div class="flex-1">
+            <div class="text-sm font-bold text-slate-800">Retro gry & Arcade</div>
+            <p class="text-[11px] text-slate-500">Stare automaty, konsole, piksele i turniej o mistrza!</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
+        </label>
+
+        <!-- Lump / Second Hand (ze zaktualizowanym opisem) -->
+        <label class="activity-card flex items-center p-3 rounded-2xl border-2 border-slate-200 bg-white hover:border-rose-400 cursor-pointer transition-all">
+          <input type="radio" name="activity" value="Lump / Vintage hunting 👗 (Wydajemy po 50-100 max i idziemy tak potem jeść 🤣)" class="hidden peer">
+          <div class="text-3xl mr-3 peer-checked:scale-110 transition-transform">👗</div>
+          <div class="flex-1">
+            <div class="text-sm font-bold text-slate-800">Lump / Vintage Hunting</div>
+            <p class="text-[11px] text-slate-500 font-medium text-rose-600">wydajemy po 50-100 max i idziemy tak potem jeść 🤣</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
+        </label>
+
+        <!-- Karaoke (nowa opcja) -->
+        <label class="activity-card flex items-center p-3 rounded-2xl border-2 border-slate-200 bg-white hover:border-rose-400 cursor-pointer transition-all">
+          <input type="radio" name="activity" value="Karaoke 🎤 (Bo każdy ładnie śpiewa 😂)" class="hidden peer">
+          <div class="text-3xl mr-3 peer-checked:scale-110 transition-transform">🎤</div>
+          <div class="flex-1">
+            <div class="text-sm font-bold text-slate-800">Karaoke</div>
+            <p class="text-[11px] text-slate-500 font-medium text-purple-600">bo każdy ładnie śpiewa 😂</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
+        </label>
+
+        <!-- Inne / Niespodzianka -->
+        <label class="activity-card flex items-center p-3 rounded-2xl border-2 border-slate-200 bg-white hover:border-rose-400 cursor-pointer transition-all">
+          <input type="radio" name="activity" value="Inne / Niespodzianka 🎲" class="hidden peer" id="activity-other-radio">
+          <div class="text-3xl mr-3 peer-checked:scale-110 transition-transform">🎲</div>
+          <div class="flex-1">
+            <div class="text-sm font-bold text-slate-800">Inne / Zaskocz mnie!</div>
+            <p class="text-[11px] text-slate-500">Masz inny pomysł albo chcesz, żebym to ja Cię zaskoczył?</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
+        </label>
+
+        <!-- Opcjonalne pole własnego pomysłu -->
+        <div id="other-activity-input-box" class="hidden pt-1">
+          <input type="text" id="custom-activity-input" placeholder="Wpisz swój pomysł (np. bilard, planszówki, kino)..." class="w-full px-3.5 py-2.5 rounded-xl border border-rose-200 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-rose-50/50">
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <button onclick="goToStep(2)" class="w-1/3 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition">
+          Wróć
+        </button>
+        <button onclick="validateStep3()" class="w-2/3 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-lg shadow-rose-200 hover:brightness-105 active:scale-95 transition">
           Przejdź do jedzonka 🍕
         </button>
       </div>
     </div>
 
-    <!-- KROK 3: Wybór kuchni -->
-    <div id="step-3" class="step-card hidden bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-rose-100">
+    <!-- KROK 4: Wybór kuchni -->
+    <div id="step-4" class="step-card hidden bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-xl border border-rose-100">
       <div class="text-center mb-5">
         <div class="text-5xl mb-2">🍽️🤤</div>
         <h2 class="text-2xl font-bold text-slate-800">Co wrzucamy na ruszt?</h2>
@@ -230,7 +339,7 @@
             <div class="text-sm font-bold text-slate-800 flex items-center gap-1">
               Amerykańska (Mak) 😝
             </div>
-            <p class="text-[11px] text-slate-500">Wiem, że uwielbiasz! Powiększone frytki i nuggetsy.</p>
+            <p class="text-[11px] text-slate-500">Wiem, że uwielbiasz! [ironia ;d] Powiększone frytki i nuggetsy.</p>
           </div>
           <div class="w-5 h-5 rounded-full border-2 border-slate-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center text-white text-xs">✓</div>
         </label>
@@ -248,17 +357,17 @@
       </div>
 
       <div class="mt-6 flex gap-3">
-        <button onclick="goToStep(2)" class="w-1/3 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition">
+        <button onclick="goToStep(3)" class="w-1/3 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition">
           Wróć
         </button>
-        <button onclick="validateStep3()" class="w-2/3 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-lg shadow-rose-200 hover:brightness-105 active:scale-95 transition">
+        <button onclick="validateStep4()" class="w-2/3 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-lg shadow-rose-200 hover:brightness-105 active:scale-95 transition">
           Zatwierdź rezerwację! 🎟️
         </button>
       </div>
     </div>
 
-    <!-- KROK 4: Potwierdzenie i wysłanie powiadomienia -->
-    <div id="step-4" class="step-card hidden bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-2xl border border-rose-100 text-center">
+    <!-- KROK 5: Potwierdzenie i wysłanie powiadomienia -->
+    <div id="step-5" class="step-card hidden bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-2xl border border-rose-100 text-center">
       <div class="inline-flex p-3 bg-green-100 text-green-600 rounded-full mb-3">
         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
@@ -285,6 +394,11 @@
             <span class="text-lg">⏰</span>
             <span class="font-medium text-slate-500">Godzina:</span>
             <span id="summary-time" class="font-bold text-slate-800 ml-auto">-</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🎯</span>
+            <span class="font-medium text-slate-500">Plan:</span>
+            <span id="summary-activity" class="font-bold text-rose-600 ml-auto text-right">-</span>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-lg">🍴</span>
@@ -314,66 +428,128 @@
 
         <!-- SMS Button -->
         <a id="sms-link" href="#" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold shadow-md shadow-sky-200 transition">
-          <span>💬</span>
-          <span>Wyślij SMS</span>
+          <svg class="w-5 h-5 fill-none stroke-current" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+          <span>Wyślij SMS z potwierdzeniem</span>
         </a>
 
         <!-- Email Button -->
-        <a id="email-link" href="#" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold shadow-md shadow-indigo-200 transition">
-          <span>✉️</span>
-          <span>Wyślij na E-mail</span>
+        <a id="email-link" href="#" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-violet-500 hover:bg-violet-600 text-white font-bold shadow-md shadow-violet-200 transition">
+          <svg class="w-5 h-5 fill-none stroke-current" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span>Wyślij e-mail</span>
         </a>
 
-        <!-- Copy to clipboard button -->
-        <button onclick="copyReservationDetails()" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition">
-          <span>📋</span>
+        <!-- Kopiowanie do schowka -->
+        <button onclick="copyReservationDetails()" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-slate-300 hover:border-slate-400 bg-white text-slate-700 font-semibold shadow-sm transition">
+          <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+          </svg>
           <span id="copy-btn-text">Skopiuj treść potwierdzenia</span>
         </button>
       </div>
 
-      <div class="mt-6 text-center">
-        <button onclick="restartApp()" class="text-xs text-rose-500 underline hover:text-rose-700">
-          Chcesz zaplanować kolejną? Kliknij tutaj 😉
-        </button>
-      </div>
-    </div>
-
-    <!-- Mini Modal na powiadomienia wewnętrzne (zamiast alert) -->
-    <div id="toast-modal" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-slate-900/90 text-white text-xs font-semibold shadow-2xl backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
-      <span id="toast-icon">ℹ️</span>
-      <span id="toast-msg">Komunikat</span>
+      <button onclick="restartApp()" class="mt-5 text-xs text-rose-400 hover:text-rose-600 underline font-medium">
+        Wróć na początek (zmień wybory)
+      </button>
     </div>
   </main>
 
+  <!-- Pływające powiadomienie (Toast) -->
+  <div id="toast-modal" class="fixed bottom-6 z-50 bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs font-semibold flex items-center gap-2 opacity-0 pointer-events-none transition-all duration-300">
+    <span class="text-rose-400">💌</span>
+    <span id="toast-msg">Powiadomienie</span>
+  </div>
+
   <script>
-    /* Stan aplikacji */
+    /* =========================================================================
+       ⚙️ TUTAJ WPISZ SWOJE DANE KONTAKTOWE I TAJNY KLUCZ:
+       ========================================================================= */
     const state = {
-      // Tajny klucz dostępu - możesz go zmienić na dowolne słowo/hasło
-      secretKey: "zaproact",
-      currentStep: 1,
-      noAttempts: 0,
-      selectedDate: '',
-      selectedTime: '18:30',
-      selectedCuisine: '',
-      // Twój numer telefonu (np. "48123456789") - wpisz tutaj, a WhatsApp i SMS od razu skierują się do Ciebie!
+      // 1. Twój tajny klucz (używany w linku ?klucz=... lub wpisywany na kłódce):
+      secretKey: "alpaka2026",
+
+      // 2. Twój numer telefonu (bez plusa, bez spacji, z kodem Polski 48):
+      // Np. "48500600700"
       myPhoneNumber: "48500753659",
-      // Twój adres e-mail (np. "twojmail@gmail.com")
-      myEmail: "banasik.paul@gmail.com"
+
+      // 3. Twój adres e-mail (jeśli ma mieć opcję wysłania maila):
+      myEmail: "banasik.paul@gmail.com",
+
+      // Zmienne systemowe (ich nie musisz zmieniać):
+      currentStep: 1,
+      selectedDate: "",
+      selectedTime: "18:30",
+      selectedActivity: "",
+      selectedCuisine: "",
+      noAttempts: 0
     };
 
-    // Weryfikacja tajnego klucza w adresie URL (?klucz=...)
+    // Weryfikacja tajnego klucza w adresie URL (?klucz=...) lub wpisanego ręcznie
     function checkAccessSecurity() {
+      // 1. Jeśli otwierasz plik lokalnie z dysku (file://) lub w podglądzie edytora: pomiń blokadę do testów
+      const isLocalFile = window.location.protocol === 'file:' || 
+                          window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' ||
+                          window.location.hostname === '';
+      if (isLocalFile) {
+        unlockApp();
+        return true;
+      }
+
+      // 2. Sprawdź parametr w linku ?klucz=...
       const urlParams = new URLSearchParams(window.location.search);
       const providedKey = urlParams.get('klucz');
 
-      // Jeśli strona nie jest podglądem i klucz nie pasuje: zablokuj
-      if (providedKey !== state.secretKey) {
-        document.getElementById('app-main').classList.add('hidden');
-        document.getElementById('locked-screen').classList.remove('hidden');
-        return false;
+      // 3. Sprawdź, czy klucz został już wcześniej wpisany i zapamiętany w sesji
+      const savedKey = sessionStorage.getItem('date_secret_key');
+
+      if (providedKey === state.secretKey || savedKey === state.secretKey) {
+        unlockApp();
+        return true;
       }
-      return true;
+
+      // W przeciwnym razie pokaż ekran z kłódką i polem na hasło
+      document.getElementById('app-main').classList.add('hidden');
+      document.getElementById('locked-screen').classList.remove('hidden');
+      return false;
     }
+
+    function unlockApp() {
+      document.getElementById('locked-screen').classList.add('hidden');
+      document.getElementById('app-main').classList.remove('hidden');
+    }
+
+    // Obsługa ręcznego wpisania klucza
+    function submitUnlockKey() {
+      const input = document.getElementById('unlock-key-input');
+      const errorMsg = document.getElementById('unlock-error');
+      
+      if (input.value.trim() === state.secretKey) {
+        errorMsg.classList.add('hidden');
+        sessionStorage.setItem('date_secret_key', state.secretKey);
+        unlockApp();
+        triggerConfetti();
+        playSuccessSound();
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.classList.add('border-red-400');
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    // Obsługa klawisza Enter w polu hasła
+    document.addEventListener('DOMContentLoaded', () => {
+      const keyInput = document.getElementById('unlock-key-input');
+      if (keyInput) {
+        keyInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') submitUnlockKey();
+        });
+      }
+    });
 
     /* Teksty przy próbach kliknięcia "NIE" */
     const teaseMessages = [
@@ -451,13 +627,15 @@
         activeCard.classList.remove('hidden');
       }
 
-      // Aktualizacja wskaźników kroku
-      for (let i = 1; i <= 4; i++) {
+      // Aktualizacja wskaźników kroku (5 kroków)
+      for (let i = 1; i <= 5; i++) {
         const dot = document.getElementById(`dot-${i}`);
-        if (i <= stepNum) {
-          dot.className = "w-8 h-2 rounded-full bg-rose-500 transition-all duration-300";
-        } else {
-          dot.className = "w-8 h-2 rounded-full bg-rose-200 transition-all duration-300";
+        if (dot) {
+          if (i <= stepNum) {
+            dot.className = "w-8 h-2 rounded-full bg-rose-500 transition-all duration-300";
+          } else {
+            dot.className = "w-8 h-2 rounded-full bg-rose-200 transition-all duration-300";
+          }
         }
       }
 
@@ -494,7 +672,44 @@
       goToStep(3);
     }
 
-    // Wybór kuchni
+    /* Wybór aktywności (Krok 3) */
+    document.querySelectorAll('.activity-card input').forEach(input => {
+      input.addEventListener('change', (e) => {
+        document.querySelectorAll('.activity-card').forEach(c => {
+          c.classList.remove('border-rose-500', 'bg-rose-50/50');
+        });
+        if (e.target.checked) {
+          e.target.closest('.activity-card').classList.add('border-rose-500', 'bg-rose-50/50');
+          state.selectedActivity = e.target.value;
+          
+          const otherInputBox = document.getElementById('other-activity-input-box');
+          if (e.target.id === 'activity-other-radio') {
+            otherInputBox.classList.remove('hidden');
+          } else {
+            otherInputBox.classList.add('hidden');
+          }
+        }
+      });
+    });
+
+    function validateStep3() {
+      const selected = document.querySelector('input[name="activity"]:checked');
+      if (!selected) {
+        showToast('Wybierz chociaż jedną atrakcję! 🎯');
+        return;
+      }
+
+      const customInput = document.getElementById('custom-activity-input');
+      if (selected.id === 'activity-other-radio' && customInput.value.trim() !== '') {
+        state.selectedActivity = `Inne (${customInput.value.trim()}) 🎲`;
+      } else {
+        state.selectedActivity = selected.value;
+      }
+
+      goToStep(4);
+    }
+
+    // Wybór kuchni (Krok 4)
     document.querySelectorAll('.cuisine-card input').forEach(input => {
       input.addEventListener('change', (e) => {
         document.querySelectorAll('.cuisine-card').forEach(c => {
@@ -507,7 +722,7 @@
       });
     });
 
-    function validateStep3() {
+    function validateStep4() {
       const selected = document.querySelector('input[name="cuisine"]:checked');
       if (!selected) {
         showToast('Wybierz chociaż jedną pyszną opcję! 🍔');
@@ -525,6 +740,7 @@
 
       document.getElementById('summary-date').textContent = formattedDate;
       document.getElementById('summary-time').textContent = state.selectedTime;
+      document.getElementById('summary-activity').textContent = state.selectedActivity;
       document.getElementById('summary-food').textContent = state.selectedCuisine;
 
       // Przygotowanie linków do wysyłki powiadomienia
@@ -532,15 +748,16 @@
 
       triggerConfetti();
       playSuccessSound();
-      goToStep(4);
+      goToStep(5);
     }
 
     function prepareNotificationLinks(formattedDate) {
       const message = `Cześć! Zgodziłam się na randkę! ❤️🎉\n\n` +
                       `📅 Kiedy: ${formattedDate}\n` +
                       `⏰ Godzina: ${state.selectedTime}\n` +
+                      `🎯 Plan randki: ${state.selectedActivity}\n` +
                       `🍴 Wybrane jedzonko: ${state.selectedCuisine}\n\n` +
-                      `Teraz Twoja kolej – rezerwuj stolik! 😉`;
+                      `Teraz Twoja kolej – ogarniaj szczegóły! 😉`;
 
       const encodedMsg = encodeURIComponent(message);
       const emailSubject = encodeURIComponent("Potwierdzenie Randki! ❤️");
@@ -576,10 +793,10 @@
       const message = `Cześć! Zgodziłam się na randkę! ❤️🎉\n` +
                       `📅 Kiedy: ${formattedDate}\n` +
                       `⏰ Godzina: ${state.selectedTime}\n` +
+                      `🎯 Plan: ${state.selectedActivity}\n` +
                       `🍴 Jedzonko: ${state.selectedCuisine}\n` +
                       `Rezerwuj stolik! 😉`;
 
-      // Fallback bezpieczny dla iFrame
       const textarea = document.createElement('textarea');
       textarea.value = message;
       document.body.appendChild(textarea);
